@@ -17,16 +17,26 @@ export default function AddProductToCart({ product }: AddProductToCartProps) {
   const cartItem = data.find((i) => i.product.id === product.id);
 
   const addProduct = () => {
-    upsertCart(
-      { product, count: cartItem ? cartItem.count + 1 : 1 },
-      { onSuccess: invalidateCart }
-    );
+    if (product.id && product.price) {
+      upsertCart(
+        {
+          product_id: product.id,
+          product_price: product.price,
+          count: cartItem ? cartItem.count + 1 : 1,
+        },
+        { onSuccess: invalidateCart }
+      );
+    }
   };
 
   const removeProduct = () => {
-    if (cartItem) {
+    if (cartItem && cartItem.product.id && cartItem.product.price) {
       upsertCart(
-        { ...cartItem, count: cartItem.count - 1 },
+        {
+          product_id: cartItem.product.id,
+          product_price: cartItem.product.price,
+          count: cartItem.count - 1,
+        },
         { onSuccess: invalidateCart }
       );
     }
